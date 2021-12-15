@@ -5,11 +5,18 @@ echo ""
 echo ""
 echo "DRUPAL 9 MULTIDEV CONFIG EXPORT: "
 echo 
-echo "* exports config from multidev"
-echo "* imports it to dev"
-echo "* prompts for deploy to test and live"
+echo "In a Multidev:"
+echo "* set multidev to sftp mode"
+echo "* export configuration"
+echo "* git commit the changes"
 echo ""
-echo "See: https://rii-comms.arizona.edu/drupal9-config-management"
+echo "In Dev:"
+echo "* backup dev"
+echo "* merge multidev to dev"
+echo "* imports configuration from file system to database"
+echo "* opens dev in browser for testing"
+echo "* prompts for deployment to test"
+echo "* prompts for deployment to live"
 echo ""
 echo ""      
 read -p "Pantheon site's machine name:        "  sitename      
@@ -18,15 +25,15 @@ read -p "Describe changes [commit message]:   "  message
 
 echo ""
 echo ""      
-echo "Exporting configurations on: "
+echo "Exporting configuration from the database to the file system on:"
 echo "$sitename.$multi"
-echo "______________________________________________"      
+echo "________________________________________________________________"      
 echo ""
 echo ""
 
 terminus connection:set $sitename.$multi sftp --yes
-terminus remote:drush   $sitename.$multi config:export --yes
-terminus env:commit  --message "$message" --force $sitename.$multi --yes
+terminus drush   $sitename.$multi config:export --yes
+terminus env:commit  --message "$message" $sitename.$multi --yes
 
 
 read -p "Continue to Dev? " -n 1 -r
