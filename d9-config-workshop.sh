@@ -6,14 +6,17 @@ echo ""
 echo "Configuration Management Demo"
 echo ""
 
-read -p "Pantheon site's machine name:        "  sitename      
-read -p "Multidev's machine name:             "  multi
-read -p "Describe changes [commit message]:   "  message
+#read -p "Pantheon site's machine name:        "  sitename      
+#read -p "Multidev's machine name:             "  multi
+read -p "Describe changes made [git commit message]: "  message
+
+sitename=config-demo
+multi=thummel
 
 echo ""      
 echo "Switch to SFTP Mode:"
 echo "terminus connection:set $sitename.$multi sftp --yes"
-
+echo ""
 terminus connection:set $sitename.$multi sftp --yes
 
 read -r -s -p $
@@ -29,13 +32,12 @@ read -r -s -p $
 
 echo ""
 echo ""
-echo "Terminus Commit:"
+echo "Terminus Commit changes in $sitename.$multi:"
 echo ""
-read -p "Describe changes [git commit message]:   "  message
 echo ""
-echo "terminus env:commit  --message "$message" --force $sitename.$multi --yes"
+echo "terminus env:commit  --message "$message" $sitename.$multi --yes"
 
-terminus env:commit  --message "$message" --force $sitename.$multi --yes
+terminus env:commit  --message "$message" $sitename.$multi --yes
 echo ""
 read -r -s -p $
 
@@ -44,10 +46,6 @@ echo ""
 
 read -p "Backup and Merge to Dev? y/n" -n 1 -r
 echo ""
-if [[ ! $REPLY =~ ^[Yy]$ ]]
-then
-    exit 1
-fi
 
 echo "Backing up Dev/Master:"
 echo ""
