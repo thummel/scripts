@@ -19,6 +19,7 @@ echo "* prompts for deployment to test"
 echo "* prompts for deployment to live"
 echo ""
 echo ""      
+
 read -p "Pantheon site's machine name:        "  sitename      
 read -p "Multidev's machine name:             "  multi
 read -p "Describe changes [commit message]:   "  message
@@ -59,7 +60,6 @@ mylogin=$(terminus drush $sitename.dev uli $myusername)
 open $mylogin
 sleep 4
 
-open https://dev-$sitename.pantheonsite.io/admin/reports/dblog
 open https://dev-$sitename.pantheonsite.io/admin/reports/updates
 open https://dev-$sitename.pantheonsite.io/admin/reports/status
 
@@ -72,6 +72,7 @@ read -p "Deploy to $sitename.test?  [y/n] " answer
     echo "Deploying to:" $sitename.test
     terminus env:deploy $sitename.test  --note "deploy to test: $message" 
     terminus drush $sitename.test config:import
+    terminus drush $sitename.text 
     terminus drush $sitename.test updatedb
     terminus drush $sitename.test cron
     terminus env:wake $sitename.test 
