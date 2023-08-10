@@ -4,37 +4,26 @@ clear
 echo ""
 echo ""
 echo "DRUPAL 9 MULTIDEV CONFIG EXPORT: "
-echo 
-echo "In a Multidev:"
-echo "* set multidev to sftp mode"
-echo "* export configuration"
-echo "* git commit the changes"
+echo "Exports config from multidev and imports it to dev, then prompts for deploy to test and live"
 echo ""
-echo "In Dev:"
-echo "* backup dev"
-echo "* merge multidev to dev"
-echo "* imports configuration from file system to database"
-echo "* opens dev in browser for testing"
-echo "* prompts for deployment to test"
-echo "* prompts for deployment to live"
+echo "See: https://rii-comms.arizona.edu/drupal9-config-management"
 echo ""
 echo ""      
-
 read -p "Pantheon site's machine name:        "  sitename      
 read -p "Multidev's machine name:             "  multi
 read -p "Describe changes [commit message]:   "  message
 
 echo ""
 echo ""      
-echo "Exporting configuration from the database to the file system on:"
+echo "Exporting configurations on: "
 echo "$sitename.$multi"
-echo "________________________________________________________________"      
+echo "______________________________________________"      
 echo ""
 echo ""
 
 terminus connection:set $sitename.$multi sftp --yes
-terminus drush   $sitename.$multi config:export --yes
-terminus env:commit  --message "$message" $sitename.$multi --yes
+terminus remote:drush   $sitename.$multi config:export --yes
+terminus env:commit  --message "$message" --force $sitename.$multi --yes
 
 
 read -p "Continue to Dev? " -n 1 -r
@@ -60,6 +49,7 @@ mylogin=$(terminus drush $sitename.dev uli $myusername)
 open $mylogin
 sleep 4
 
+open https://dev-$sitename.pantheonsite.io/admin/reports/dblog
 open https://dev-$sitename.pantheonsite.io/admin/reports/updates
 open https://dev-$sitename.pantheonsite.io/admin/reports/status
 
@@ -72,7 +62,6 @@ read -p "Deploy to $sitename.test?  [y/n] " answer
     echo "Deploying to:" $sitename.test
     terminus env:deploy $sitename.test  --note "deploy to test: $message" 
     terminus drush $sitename.test config:import
-    terminus drush $sitename.text 
     terminus drush $sitename.test updatedb
     terminus drush $sitename.test cron
     terminus env:wake $sitename.test 
@@ -96,8 +85,8 @@ read -p "Deploy to $sitename.live? [y/n] " answer3
     echo ""
     echo "Backing up and Deploying to:" $sitename.live
     terminus backup:create $sitename.live
-    terminus drush $sitename.live config:import
     terminus env:deploy $sitename.live --note "deploy to live: $message"
+    terminus drush $sitename.live config:import
     terminus drush $sitename.live updatedb
     terminus drush $sitename.live cron
     mylive=$(terminus drush $sitename.live uli $myusername)

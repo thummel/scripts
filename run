@@ -1,0 +1,79 @@
+#!/bin/bash
+#
+# MUST SET -- Pantheon Machine Token in file creds.sh"
+clear
+cd ~/scripts
+source creds.txt
+echo ""
+echo "Logging into Pantheon...."
+myusername=$(whoami)
+terminus auth:login  --email=$myusername@email.arizona.edu --machine-token=$mtoken -q
+
+# for testing:
+# myusername=traceyhummel62@gmail.com
+# mtoken="4u5xvANs9o-3GbUj2wqQQIC-WcFvr8xx-YfJKAjyfBTPI"
+# terminus auth:login  --email=$myusername --machine-token=$mtoken -q
+
+echo ""
+read -p "
+ 
+         UPGRADE ALL SITES:
+           [1] Mass Backup All Sites
+           [2] Mass Upstream Updates on Dev
+           [3] Mass Deploy Test / Live
+         QS SITES:
+           [4] QS Backup
+           [5] QS Upstream Updates on Dev
+           [6] QS Deploy Test / Live
+
+         Drupal 8 Websites:
+           [qs2] Create New QS2 Drupal 9 site
+           [d9]  Deploy Configuration from Multidev
+
+         Drupal 7:
+           [qs] Create New Drupal 7 QS
+           
+         Pantheon / Misc:
+           [check]  Check all sites for updates
+           [users]  Add user to a Pantheon team or Drupal website as admins
+           [delete] Deletes a user from Pantheon team and cancels Drupal user account
+           [logs]   Pull logs for individual site
+           [?]      Help Page
+
+         Other:
+	   * add-users-spreadsheet.sh
+             takes a list of netids and creates users, set's cas and assigns a role; 
+             requires customization
+           
+
+Select an option: " answer
+echo ""
+if   [ $answer = 1 ]; then
+        source backup-all.sh
+elif [ $answer = 2 ]; then
+        source upstream-all.sh
+elif [ $answer = 3 ]; then
+        source deploy-all.sh
+elif [ $answer = 3 ]; then
+        source backup-qs.sh
+elif [ $answer = 5 ]; then
+        source upstream-qs.sh
+elif [ $answer = 6 ]; then
+        source deploy-qs.sh
+elif [ $answer = d9 ]; then
+        source d9-config-multi.sh
+elif [ $answer = qs ]; then
+        source createnew-qs.sh
+elif  [ $answer = check ]; then
+        source check-all.sh
+elif [ $answer = qs2 ]; then
+        source createnew-qs2.sh
+elif [ $answer = ? ]; then
+        open https://live-techdocs.pantheonsite.io/documents/update-websites-using-bash-script
+elif [ $answer = logs ]; then
+        source get-logs.sh
+elif [ $answer = users ]; then
+        source add-user.sh
+elif [ $answer = delete ]; then
+        source delete-user.sh
+fi
