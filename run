@@ -26,13 +26,10 @@ read -p "
            [5] QS Upstream Updates on Dev
            [6] QS Deploy Test / Live
 
-         Drupal 8 Websites:
-           [qs2] Create New QS2 Drupal 9 site
-           [d9]  Deploy Configuration from Multidev
+         Drupal 10 Websites:
+           [qs2] Create New QS2 Drupal 10 site
+           [d10]  Deploy Configuration from Multidev
 
-         Drupal 7:
-           [qs] Create New Drupal 7 QS
-           
          Pantheon / Misc:
            [check]  Check all sites for updates
            [users]  Add user to a Pantheon team or Drupal website as admins
@@ -60,7 +57,7 @@ elif [ $answer = 5 ]; then
         source upstream-qs.sh
 elif [ $answer = 6 ]; then
         source deploy-qs.sh
-elif [ $answer = d9 ]; then
+elif [ $answer = d10 ]; then
         source d9-config-multi.sh
 elif [ $answer = qs ]; then
         source createnew-qs.sh
